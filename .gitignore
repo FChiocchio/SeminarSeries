@@ -1,0 +1,12 @@
+# OS / editor cruft
+.DS_Store
+Thumbs.db
+desktop.ini
+*.tmp
+index.html.tmp.*
+
+# Local dev notes — not part of the public site
+session log/
+
+# Guard: stray copies of external sites should never be published
+ESCP Business School*/

@@ -1,0 +1,2 @@
+# Normalise line endings: LF in the repo (best for a site served on Linux)
+* text=auto eol=lf

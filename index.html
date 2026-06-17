@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ESCP Economics Seminar Series</title>
+  <meta name="description" content="The ESCP Business School Economics Seminar Series — frontier research presented by leading economists. Upcoming talks, abstracts and speakers." />
+
+  <link rel="icon" type="image/svg+xml" href="assets/img/favicon.svg" />
+
+  <!-- Fonts (graceful fallback to system fonts when offline) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700;900&family=Montserrat:wght@500;600;700;800&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="assets/css/styles.css" />
+</head>
+<body id="top">
+
+  <!-- Decorative background -->
+  <div class="bg" aria-hidden="true">
+    <div class="bg__blob bg__blob--1"></div>
+    <div class="bg__blob bg__blob--2"></div>
+    <div class="bg__blob bg__blob--3"></div>
+    <div class="bg__grid"></div>
+    <div class="bg__grain"></div>
+  </div>
+
+  <!-- Header / Navigation -->
+  <header class="nav" id="nav">
+    <div class="container nav__inner">
+      <a class="brand" href="#top" aria-label="ESCP Business School — Economics Seminar Series — home">
+        <img class="brand__logo" src="assets/img/ESCP-logo-white.svg" alt="ESCP Business School" />
+        <span class="brand__divider" aria-hidden="true"></span>
+        <span class="brand__sub">Economics<br />Seminar Series</span>
+      </a>
+
+      <nav class="nav__links" id="navLinks" aria-label="Primary">
+        <a href="#upcoming">Upcoming</a>
+        <a href="#past">Past</a>
+        <a href="#about">About</a>
+        <a href="#contact">Contact</a>
+        <button class="theme-toggle" id="themeToggle" title="Toggle light / dark" aria-label="Toggle colour theme">
+          <span class="theme-toggle__icon" aria-hidden="true">◐</span>
+        </button>
+      </nav>
+
+      <button class="nav__burger" id="navBurger" aria-label="Open menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Hero -->
+  <section class="hero">
+    <span class="hero__star" aria-hidden="true"></span>
+    <div class="container hero__inner">
+      <div class="hero__copy">
+        <p class="eyebrow"><span class="dot"></span> ESCP Business School · Department of Economics</p>
+        <h1 class="hero__title">
+          Economics<br /><span class="grad">Seminar Series</span>
+        </h1>
+        <p class="hero__lead">
+          Frontier research, presented and debated. Each session brings a
+          leading economist to ESCP to share new work — from macro and finance
+          to labour, trade and the economics of AI.
+        </p>
+        <div class="hero__actions">
+          <a class="btn btn--primary" href="#upcoming">See upcoming talks</a>
+          <a class="btn btn--ghost" href="#contact">Join the mailing list</a>
+        </div>
+      </div>
+
+      <!-- Next seminar spotlight -->
+      <aside class="spotlight" id="spotlight" aria-live="polite">
+        <div class="spotlight__skeleton">Loading next seminar…</div>
+      </aside>
+    </div>
+  </section>
+
+  <!-- Upcoming -->
+  <main>
+    <section class="section" id="upcoming">
+      <div class="container">
+        <div class="section__head">
+          <div>
+            <p class="kicker">What's next</p>
+            <h2 class="section__title">Upcoming seminars</h2>
+          </div>
+          <div class="filters" id="upcomingFilters" role="tablist" aria-label="Filter by field"></div>
+        </div>
+        <div class="carousel" id="upcomingCarousel">
+          <button class="carousel__nav carousel__nav--prev" id="upcomingPrev" aria-label="Previous seminars" type="button">‹</button>
+          <div class="carousel__track" id="upcomingList"></div>
+          <button class="carousel__nav carousel__nav--next" id="upcomingNext" aria-label="More seminars" type="button">›</button>
+        </div>
+        <div class="carousel__bar" id="upcomingBarTrack" aria-hidden="true"><span id="upcomingBar"></span></div>
+        <p class="empty" id="upcomingEmpty" hidden>No upcoming seminars are scheduled right now — check back soon.</p>
+      </div>
+    </section>
+
+    <!-- Past -->
+    <section class="section section--alt" id="past">
+      <div class="container">
+        <div class="section__head">
+          <div>
+            <p class="kicker">The archive</p>
+            <h2 class="section__title">Past seminars</h2>
+          </div>
+          <div class="filters" id="pastFilters" role="tablist" aria-label="Filter past seminars by year"></div>
+        </div>
+        <div class="past-list" id="pastList"></div>
+        <p class="empty" id="pastEmpty" hidden>The archive is empty for now.</p>
+      </div>
+    </section>
+
+    <!-- About -->
+    <section class="section" id="about">
+      <div class="container about">
+        <div class="about__intro">
+          <p class="kicker">About the series</p>
+          <h2 class="section__title">A weekly forum for new economics</h2>
+          <p>
+            The ESCP Economics Seminar Series is the department's standing forum
+            for presenting and discussing cutting-edge research. We host external
+            speakers alongside ESCP faculty, with talks spanning theory, empirics
+            and policy. Seminars are open to faculty, PhD students and master's
+            students across all ESCP campuses.
+          </p>
+          <p>
+            Sessions run on most Wednesdays during term. Talks are typically
+            75 minutes including discussion, followed by informal exchanges with
+            the speaker.
+          </p>
+        </div>
+        <ul class="about__stats">
+          <li><span class="stat__num" data-count="24">0</span><span class="stat__label">talks / year</span></li>
+          <li><span class="stat__num" data-count="6">0</span><span class="stat__label">campuses</span></li>
+          <li><span class="stat__num" data-count="75">0</span><span class="stat__label">minutes / session</span></li>
+        </ul>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer / Contact -->
+  <footer class="footer" id="contact">
+    <div class="container footer__inner">
+      <div class="footer__brand">
+        <img class="footer__logo" src="assets/img/ESCP-logo-white.svg" alt="ESCP Business School" />
+        <p class="footer__name">Economics Seminar Series</p>
+        <p class="footer__tag">Department of Economics, ESCP Business School</p>
+      </div>
+
+      <div class="footer__col">
+        <h3>Contact</h3>
+        <p><a href="mailto:economics-seminars@escp.eu">economics-seminars@escp.eu</a></p>
+        <p>ESCP Business School<br />79 Avenue de la République<br />75011 Paris, France</p>
+      </div>
+
+      <div class="footer__col">
+        <h3>Organisers</h3>
+        <p>Seminar coordination:<br /><a href="mailto:fchiocchio@escp.eu">F. Chiocchio</a></p>
+        <p>Suggest a speaker — get in touch by email.</p>
+      </div>
+
+      <div class="footer__col footer__subscribe">
+        <h3>Stay in the loop</h3>
+        <p>Get the schedule and reminders in your inbox.</p>
+        <form class="subscribe" id="subscribeForm">
+          <input type="email" name="email" placeholder="you@institution.edu" aria-label="Email address" required />
+          <button class="btn btn--primary" type="submit">Subscribe</button>
+        </form>
+        <p class="subscribe__note" id="subscribeNote" hidden>Thanks — we'll be in touch.</p>
+      </div>
+    </div>
+    <div class="container footer__bar">
+      <p>© <span id="year"></span> ESCP Business School — Economics Seminar Series.</p>
+      <p class="footer__links">
+        <a href="#upcoming">Upcoming</a> ·
+        <a href="#past">Past</a> ·
+        <a href="#about">About</a>
+      </p>
+    </div>
+  </footer>
+
+  <!-- Detail modal -->
+  <div class="modal" id="modal" hidden>
+    <div class="modal__backdrop" data-close></div>
+    <div class="modal__panel" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <button class="modal__close" data-close aria-label="Close">×</button>
+      <div class="modal__body" id="modalBody"></div>
+    </div>
+  </div>
+
+  <script src="assets/js/data.js"></script>
+  <script src="assets/js/app.js"></script>
+</body>
+</html>
