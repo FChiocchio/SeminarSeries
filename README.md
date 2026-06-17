@@ -22,10 +22,10 @@ Everything lives in one file: **`assets/js/data.js`**.
 
 Add an object to the `SEMINARS` array. The site does the rest:
 
-- events dated **today or later** appear under **Upcoming** (with a live
-  countdown for the very next one);
+- events dated **today or later** appear under **Upcoming** (shown as the
+  next-seminar spotlight + a slider);
 - earlier events drop into **Past** automatically;
-- the field filter chips and year filters are generated from your data.
+- the year filters for Past are generated from your data.
 
 Minimal example:
 
@@ -34,9 +34,8 @@ Minimal example:
   id: "2026-11-04-smith",          // any unique string
   date: "2026-11-04",              // YYYY-MM-DD
   time: "16:00–17:15",
-  location: "Campus Paris · Room 4201",
-  mode: "in-person",               // "in-person" | "online" | "hybrid"
-  field: "Macroeconomics",         // becomes a filter chip
+  campus: "Paris",                 // Paris | Madrid | Berlin | London | Turin
+  location: "Room 4201",           // room / hall (optional)
   title: "Talk title goes here",
   abstract: "One or two paragraphs describing the talk…",
   speaker: {
@@ -69,9 +68,7 @@ The site uses ESCP's actual identity, taken from the official site:
 - Fonts **Montserrat** (headings) + **Lato** (body)
 - The official white ESCP logo (`assets/img/ESCP-logo-white.svg`) and the
   ESCP star motif (`assets/img/escp-star.svg`)
-- Research fields are **colour-coded** with ESCP's categorical palette (blue,
-  green, orange, gold, etc.) — edit the `FIELD_COLORS` map in `assets/js/app.js`
-  to add or recolour fields.
+- Each seminar card shows its **campus** (Paris / Madrid / Berlin / London / Turin)
 
 The nav, hero and footer stay in immersive purple in both themes so the white
 logo always reads. Fine-tune everything via the CSS variables at the top of
@@ -82,10 +79,9 @@ theme is included and toggled with the ◐ button in the header.
 
 - Auto-sorted **Upcoming** / **Past** sections
 - **Upcoming** shown as a one-row **slider** (arrows, drag, swipe, snap)
-- Research fields **colour-coded** with ESCP's categorical palette
-- Live **countdown** to the next seminar
+- Each card shows its **campus**
 - Speaker cards → click for a **detail modal** (full abstract + links)
-- **Filter** by research field (upcoming) and by year (past)
+- **Filter** past seminars by year
 - **Add to calendar** — generates an `.ics` file for any upcoming talk
 - Light / dark theme, mobile menu, scroll-reveal animations
 - Works offline; no frameworks

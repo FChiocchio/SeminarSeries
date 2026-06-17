@@ -69,37 +69,7 @@
     arrow: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>'
   };
 
-  const modeLabel = { "in-person": "In person", online: "Online", hybrid: "Hybrid" };
-
   const metaPill = (icon, text) => `<span class="meta">${icon}${escapeHtml(text)}</span>`;
-
-  /* Research fields colour-coded with ESCP's categorical palette */
-  const FIELD_COLORS = {
-    "Macroeconomics":   "#0079c0",
-    "Finance":          "#37a5e2",
-    "Labour":           "#679d3f",
-    "Trade":            "#d06516",
-    "Economics of AI":  "#e7006c",
-    "Development":      "#009944",
-    "Microeconomics":   "#eec343",
-    "Environmental":    "#a5bd31",
-    "Econometrics":     "#60d0e4",
-    "Theory":           "#c9412e"
-  };
-  const fieldColor = (f) => FIELD_COLORS[f] || "#e7006c";
-
-  /* Pick black/white text for legibility on a given background colour */
-  const idealInk = (hex) => {
-    const c = hex.replace("#", "");
-    const r = parseInt(c.slice(0, 2), 16), g = parseInt(c.slice(2, 4), 16), b = parseInt(c.slice(4, 6), 16);
-    return (0.299 * r + 0.587 * g + 0.114 * b) / 255 > 0.62 ? "#1A0850" : "#ffffff";
-  };
-
-  /* Inline custom-property style string keying a card/item to its field colour */
-  const fieldStyle = (field) => {
-    const col = fieldColor(field);
-    return `--field:${col};--field-ink:${idealInk(col)}`;
-  };
 
   /* --------------------------- partition ---------------------------- */
   const today = startOfToday();
@@ -107,9 +77,7 @@
   const upcoming = data.filter((s) => parseDate(s.date) >= today);
   const past = data.filter((s) => parseDate(s.date) < today).reverse(); // most recent first
 
-  /* ----------------------- spotlight + countdown -------------------- */
-  let countdownTimer = null;
-
+  /* --------------------------- spotlight ---------------------------- */
   function renderSpotlight() {
     const el = $("#spotlight");
     if (!upcoming.length) {
@@ -117,7 +85,6 @@
       return;
     }
     const s = upcoming[0];
-    const dt = parseDate(s.date);
 
     el.innerHTML = `
       <div class="spotlight__tag"><span class="live"></span> Next seminar</div>
@@ -133,47 +100,22 @@
         ${metaPill(ICON.clock, s.time)}
         ${metaPill(ICON.pin, s.location)}
       </div>
-      <div class="countdown" id="countdown" aria-label="Time until next seminar"></div>
       <div class="spotlight__actions">
         <button class="btn btn--primary btn--sm" data-open="${s.id}">View details ${ICON.arrow}</button>
         <button class="btn btn--ghost btn--sm" data-ics="${s.id}">Add to calendar</button>
       </div>`;
 
-    /* countdown to the seminar start time */
-    const startTime = (s.time.match(/(\d{1,2}):(\d{2})/) || [null, 16, 0]);
-    dt.setHours(Number(startTime[1]) || 16, Number(startTime[2]) || 0, 0, 0);
-
-    const cd = $("#countdown");
-    const tick = () => {
-      const diff = dt - new Date();
-      if (diff <= 0) {
-        cd.innerHTML = `<div class="countdown__cell" style="flex:1"><div class="countdown__num">Live</div><div class="countdown__lbl">happening now</div></div>`;
-        clearInterval(countdownTimer);
-        return;
-      }
-      const days = Math.floor(diff / 864e5);
-      const hrs = Math.floor((diff % 864e5) / 36e5);
-      const mins = Math.floor((diff % 36e5) / 6e4);
-      const secs = Math.floor((diff % 6e4) / 1e3);
-      const cell = (n, l) => `<div class="countdown__cell"><div class="countdown__num">${String(n).padStart(2, "0")}</div><div class="countdown__lbl">${l}</div></div>`;
-      cd.innerHTML = cell(days, "days") + cell(hrs, "hrs") + cell(mins, "min") + cell(secs, "sec");
-    };
-    tick();
-    countdownTimer = setInterval(tick, 1000);
   }
 
   /* --------------------------- card markup -------------------------- */
   function cardHtml(s) {
     const dt = parseDate(s.date);
-    const tag = s.field ? `<span class="tag">${escapeHtml(s.field)}</span>` : "";
-    const isOnline = s.mode === "online";
     return `
-      <article class="card reveal" data-open="${s.id}" data-field="${escapeHtml(s.field || "")}" style="${fieldStyle(s.field)}">
+      <article class="card reveal" data-open="${s.id}">
         <div class="card__date"><span class="d-day">${dt.getDate()}</span><span class="d-mon">${MONTHS[dt.getMonth()]}</span></div>
-        <span class="card__mode ${isOnline ? "is-online" : ""}">${modeLabel[s.mode] || s.mode}</span>
+        <span class="card__campus">${escapeHtml(s.campus || "")}</span>
         <div class="card__media">${portraitHtml(s.speaker)}</div>
         <div class="card__body">
-          ${tag}
           <h3 class="card__title">${escapeHtml(s.title)}</h3>
           <div class="card__speaker">
             <strong>${escapeHtml(s.speaker.name)}</strong> · ${escapeHtml(s.speaker.affiliation)}
@@ -187,12 +129,11 @@
       </article>`;
   }
 
-  function renderUpcoming(filter = "All") {
+  function renderUpcoming() {
     const wrap = $("#upcomingList");
     const empty = $("#upcomingEmpty");
-    const list = filter === "All" ? upcoming : upcoming.filter((s) => s.field === filter);
-    wrap.innerHTML = list.map(cardHtml).join("");
-    empty.hidden = list.length > 0;
+    wrap.innerHTML = upcoming.map(cardHtml).join("");
+    empty.hidden = upcoming.length > 0;
     wrap.scrollLeft = 0;
     observeReveals();
     updateCarousel();
@@ -207,11 +148,11 @@
     if (links.slides)    pills.push(`<a class="pill" href="${escapeHtml(links.slides)}" target="_blank" rel="noopener" onclick="event.stopPropagation()">Slides</a>`);
     if (links.paper)     pills.push(`<a class="pill" href="${escapeHtml(links.paper)}" target="_blank" rel="noopener" onclick="event.stopPropagation()">Paper</a>`);
     return `
-      <div class="past-item reveal" data-open="${s.id}" style="${fieldStyle(s.field)}">
+      <div class="past-item reveal" data-open="${s.id}">
         <div class="past-item__date"><div class="pd-day">${dt.getDate()} ${MONTHS[dt.getMonth()]}</div><div class="pd-yr">${dt.getFullYear()}</div></div>
         <div class="past-item__main">
           <div class="past-item__title">${escapeHtml(s.title)}</div>
-          <div class="past-item__speaker"><strong>${escapeHtml(s.speaker.name)}</strong> · ${escapeHtml(s.speaker.affiliation)} · ${escapeHtml(s.field || "")}</div>
+          <div class="past-item__speaker"><strong>${escapeHtml(s.speaker.name)}</strong> · ${escapeHtml(s.speaker.affiliation)}</div>
         </div>
         <div class="past-item__links">${pills.join("")}</div>
       </div>`;
@@ -227,25 +168,6 @@
   }
 
   /* ---------------------------- filters ----------------------------- */
-  function buildUpcomingFilters() {
-    const box = $("#upcomingFilters");
-    if (!upcoming.length) return;
-    const fields = ["All", ...new Set(upcoming.map((s) => s.field).filter(Boolean))];
-    box.innerHTML = fields
-      .map((f, i) => {
-        const count = f === "All" ? upcoming.length : upcoming.filter((s) => s.field === f).length;
-        return `<button class="chip ${i === 0 ? "is-active" : ""}" data-filter="${escapeHtml(f)}">${escapeHtml(f)}<span class="chip__count">${count}</span></button>`;
-      })
-      .join("");
-    box.addEventListener("click", (e) => {
-      const chip = e.target.closest(".chip");
-      if (!chip) return;
-      $$(".chip", box).forEach((c) => c.classList.remove("is-active"));
-      chip.classList.add("is-active");
-      renderUpcoming(chip.dataset.filter);
-    });
-  }
-
   function buildPastFilters() {
     const box = $("#pastFilters");
     if (!past.length) return;
@@ -265,12 +187,10 @@
   /* ----------------------------- modal ------------------------------ */
   const modal = $("#modal");
   const modalBody = $("#modalBody");
-  const modalPanel = $(".modal__panel", modal);
 
   function openModal(id) {
     const s = data.find((x) => x.id === id);
     if (!s) return;
-    modalPanel.setAttribute("style", fieldStyle(s.field));
     const links = s.links || {};
     const linkBtns = [];
     if (s.speaker.website) linkBtns.push(`<a class="btn btn--primary btn--sm" href="${escapeHtml(s.speaker.website)}" target="_blank" rel="noopener">${ICON.link} Speaker website</a>`);
@@ -282,7 +202,6 @@
     modalBody.innerHTML = `
       <div class="modal__hero">${portraitHtml(s.speaker)}</div>
       <div class="modal__content">
-        ${s.field ? `<span class="tag">${escapeHtml(s.field)}</span>` : ""}
         <h2 id="modalTitle">${escapeHtml(s.title)}</h2>
         <div class="modal__speaker">
           <div style="width:52px;height:52px;border-radius:50%;overflow:hidden;flex:none">${portraitHtml(s.speaker)}</div>
@@ -294,8 +213,7 @@
         <div class="modal__meta">
           ${metaPill(ICON.cal, fmtFull(s.date))}
           ${metaPill(ICON.clock, s.time)}
-          ${metaPill(ICON.pin, s.location)}
-          ${metaPill("", modeLabel[s.mode] || s.mode)}
+          ${metaPill(ICON.pin, "Campus " + s.campus + (s.location ? " · " + s.location : ""))}
         </div>
         <div class="modal__section-label">Abstract</div>
         <p class="modal__abstract">${escapeHtml(s.abstract)}</p>
@@ -467,27 +385,6 @@
     });
   }
 
-  function initStats() {
-    const nums = $$(".stat__num");
-    if (!nums.length) return;
-    const io = new IntersectionObserver((entries) => {
-      entries.forEach((en) => {
-        if (!en.isIntersecting) return;
-        const el = en.target;
-        const target = Number(el.dataset.count);
-        let cur = 0;
-        const step = Math.max(1, Math.round(target / 40));
-        const t = setInterval(() => {
-          cur += step;
-          if (cur >= target) { cur = target; clearInterval(t); }
-          el.textContent = cur;
-        }, 28);
-        io.unobserve(el);
-      });
-    }, { threshold: 0.5 });
-    nums.forEach((n) => io.observe(n));
-  }
-
   function initSubscribe() {
     const form = $("#subscribeForm");
     if (!form) return;
@@ -503,14 +400,12 @@
   function init() {
     $("#year").textContent = new Date().getFullYear();
     renderSpotlight();
-    buildUpcomingFilters();
     buildPastFilters();
     initCarousel();
     renderUpcoming();
     renderPast();
     initNav();
     initTheme();
-    initStats();
     initSubscribe();
   }
 
