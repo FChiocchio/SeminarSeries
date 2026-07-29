@@ -18,7 +18,8 @@ const SEMINARS = [
       name: 'Libertad González',
       affiliation: 'Universitat Pompeu Fabra',
       website: 'https://libertadgonzalez.com/',
-      photo: ''
+      photo: 'assets/img/speakers/libertad-gonzalez.jpg',
+      photoPosition: 'center 28%'
     },
     links: {}
   },
@@ -34,7 +35,8 @@ const SEMINARS = [
       name: 'Margaux Suteau',
       affiliation: 'ESCP Business School',
       website: 'https://sites.google.com/view/margauxsuteau',
-      photo: ''
+      photo: 'assets/img/speakers/margaux-suteau.jpg',
+      photoPosition: 'center 28%'
     },
     links: {}
   },
@@ -50,7 +52,8 @@ const SEMINARS = [
       name: 'Gonzalo Fernández de Córdoba',
       affiliation: 'ESCP Business School',
       website: 'https://escp.eu/faculty-research/faculty-members/fernandez-de-cordoba-gonzalo',
-      photo: ''
+      photo: 'assets/img/speakers/gonzalo-fernandez-de-cordoba.jpg',
+      photoPosition: 'center 30%'
     },
     links: {}
   },
@@ -66,7 +69,8 @@ const SEMINARS = [
       name: 'Francesco Chiocchio',
       affiliation: 'ESCP Business School',
       website: 'https://fchiocchio.github.io/',
-      photo: ''
+      photo: 'assets/img/speakers/francesco-chiocchio.jpg',
+      photoPosition: 'center 30%'
     },
     links: {}
   },
@@ -82,7 +86,8 @@ const SEMINARS = [
       name: 'Paul Hubert',
       affiliation: 'Banque de France',
       website: 'https://www.banque-france.fr/fr/paul-hubert',
-      photo: ''
+      photo: 'assets/img/speakers/paul-hubert.jpg',
+      photoPosition: 'center 30%'
     },
     links: {}
   },

@@ -54,6 +54,7 @@
     if (sp.photo) {
       const fallback = avatarHtml(sp.name, cls).replace(/"/g, "&quot;");
       return `<img src="${escapeHtml(sp.photo)}" alt="${escapeHtml(sp.name)}" loading="lazy"
+                 style="--photo-position:${escapeHtml(sp.photoPosition || 'center 30%')}"
                  onerror="this.insertAdjacentHTML('afterend', this.dataset.fallback); this.remove();"
                  data-fallback="${fallback}">`;
     }
