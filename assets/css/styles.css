@@ -413,12 +413,6 @@ img { max-width: 100%; display: block; }
 .footer__col a { color: #fff; border-bottom: 1px solid transparent; transition: .2s; }
 .footer__col a:hover { color: var(--gold); border-color: var(--gold); }
 
-.subscribe { display: flex; gap: .5rem; margin-top: .3rem; }
-.subscribe input { flex: 1; min-width: 0; background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.25); border-radius: var(--btn-radius); padding: .65rem 1rem; color: #fff; font: inherit; font-size: .9rem; }
-.subscribe input::placeholder { color: rgba(255,255,255,.55); }
-.subscribe input:focus { outline: none; border-color: var(--accent-soft); }
-.subscribe__note { color: var(--gold); font-size: .85rem; margin-top: .6rem; }
-
 .footer__bar { display: flex; justify-content: space-between; align-items: center; gap: 1rem; flex-wrap: wrap; padding: 1.4rem 0; border-top: 1px solid var(--p-line); color: var(--on-purple-muted); font-size: .85rem; }
 .footer__links a:hover { color: var(--gold); }
 

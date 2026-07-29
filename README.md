@@ -31,17 +31,17 @@ Minimal example:
 
 ```js
 {
-  id: "2026-11-04-smith",          // any unique string
+  id: "2026-11-04-speaker",        // any unique string
   date: "2026-11-04",              // YYYY-MM-DD
-  time: "16:00–17:15",
+  time: "11:30 (Paris time)",
   campus: "Paris",                 // Paris | Madrid | Berlin | London | Turin
-  location: "Room 4201",           // room / hall (optional)
-  title: "Talk title goes here",
-  abstract: "One or two paragraphs describing the talk…",
+  location: "TBC",
+  title: "TBC",
+  abstract: "TBC",
   speaker: {
-    name: "Jane Smith",
-    affiliation: "MIT",
-    website: "https://economics.mit.edu/people/jane-smith",
+    name: "Speaker name",
+    affiliation: "TBC",
+    website: "",
     photo: ""                      // see below
   },
   links: {                         // all optional
@@ -106,7 +106,6 @@ SeminarSeries/
 
 ## Notes
 
-- The sample seminars (speakers, abstracts, links) are **placeholders** —
-  replace them with your real schedule. The `example.org` links are dummies.
-- Contact email in the footer is `economics-seminars@escp.eu`; update it in
-  `index.html` if needed.
+- The Fall 2026 schedule contains confirmed dates and speakers. Details that
+  have not yet been supplied are marked **TBC**.
+- Contact details and organiser website links are maintained in `index.html`.

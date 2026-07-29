@@ -98,7 +98,7 @@
       <div class="spotlight__meta">
         ${metaPill(ICON.cal, parseDate(s.date).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" }))}
         ${metaPill(ICON.clock, s.time)}
-        ${metaPill(ICON.pin, s.location)}
+        ${metaPill(ICON.pin, s.campus + ' · ' + s.location)}
       </div>
       <div class="spotlight__actions">
         <button class="btn btn--primary btn--sm" data-open="${s.id}">View details ${ICON.arrow}</button>
@@ -243,7 +243,7 @@
     start.setHours(sh, sm, 0, 0);
     const end = new Date(start);
     if (m[1]) { const [eh, em] = m[1].split(":").map(Number); end.setHours(eh, em, 0, 0); }
-    else { end.setMinutes(end.getMinutes() + 75); }
+    else { end.setMinutes(end.getMinutes() + 60); }
 
     const ics = [
       "BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//ESCP Economics Seminar Series//EN",
@@ -385,17 +385,6 @@
     });
   }
 
-  function initSubscribe() {
-    const form = $("#subscribeForm");
-    if (!form) return;
-    form.addEventListener("submit", (e) => {
-      e.preventDefault();
-      form.reset();
-      const note = $("#subscribeNote");
-      if (note) note.hidden = false;
-    });
-  }
-
   /* ----------------------------- init ------------------------------- */
   function init() {
     $("#year").textContent = new Date().getFullYear();
@@ -406,7 +395,6 @@
     renderPast();
     initNav();
     initTheme();
-    initSubscribe();
   }
 
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", init);
