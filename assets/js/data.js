@@ -17,7 +17,7 @@ const SEMINARS = [
     speaker: {
       name: 'Libertad González',
       affiliation: 'Universitat Pompeu Fabra',
-      website: '',
+      website: 'https://libertadgonzalez.com/',
       photo: ''
     },
     links: {}
@@ -33,7 +33,7 @@ const SEMINARS = [
     speaker: {
       name: 'Margaux Suteau',
       affiliation: 'ESCP Business School',
-      website: '',
+      website: 'https://sites.google.com/view/margauxsuteau',
       photo: ''
     },
     links: {}
@@ -49,7 +49,7 @@ const SEMINARS = [
     speaker: {
       name: 'Gonzalo Fernández de Córdoba',
       affiliation: 'ESCP Business School',
-      website: '',
+      website: 'https://escp.eu/faculty-research/faculty-members/fernandez-de-cordoba-gonzalo',
       photo: ''
     },
     links: {}
@@ -81,7 +81,7 @@ const SEMINARS = [
     speaker: {
       name: 'Paul Hubert',
       affiliation: 'Banque de France',
-      website: '',
+      website: 'https://www.banque-france.fr/fr/paul-hubert',
       photo: ''
     },
     links: {}

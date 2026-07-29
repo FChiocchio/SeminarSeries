@@ -82,7 +82,7 @@ theme is included and toggled with the ◐ button in the header.
 - Each card shows its **campus**
 - Speaker cards → click for a **detail modal** (full abstract + links)
 - **Filter** past seminars by year
-- **Add to calendar** — generates an `.ics` file for any upcoming talk
+- **Add to calendar** — Google, Outlook, or Apple/`.ics`, using Europe/Paris time
 - Light / dark theme, mobile menu, scroll-reveal animations
 - Works offline; no frameworks
 

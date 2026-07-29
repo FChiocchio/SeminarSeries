@@ -217,6 +217,52 @@ img { max-width: 100%; display: block; }
 .btn--ghost:hover { border-color: var(--accent-soft); color: var(--accent-soft); }
 .btn--sm { padding: .56rem 1rem; font-size: .82rem; }
 
+/* Calendar provider menu */
+.calendar-menu {
+  position: fixed;
+  z-index: 140;
+  width: min(310px, calc(100vw - 24px));
+  padding: .55rem;
+  color: var(--text);
+  background: var(--surface);
+  border: 1px solid var(--line-2);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow);
+}
+.calendar-menu[hidden] { display: none; }
+.calendar-menu__title {
+  padding: .55rem .7rem .45rem;
+  color: var(--muted);
+  font-family: var(--font-display);
+  font-size: .74rem;
+  font-weight: 700;
+  letter-spacing: .04em;
+}
+.calendar-menu__item {
+  display: block;
+  width: 100%;
+  padding: .68rem .75rem;
+  color: var(--text);
+  background: transparent;
+  border: 0;
+  border-radius: var(--btn-radius);
+  cursor: pointer;
+  font: 700 .86rem var(--font-display);
+  text-align: left;
+}
+.calendar-menu__item:hover,
+.calendar-menu__item:focus-visible {
+  color: var(--brand-text);
+  background: var(--surface-2);
+  outline: none;
+}
+.calendar-menu__note {
+  margin: .45rem .7rem .35rem;
+  color: var(--muted);
+  font-size: .72rem;
+  line-height: 1.45;
+}
+
 /* ------------------------------------------------------------------ */
 /* Hero                                                               */
 /* ------------------------------------------------------------------ */
@@ -247,7 +293,7 @@ img { max-width: 100%; display: block; }
 
 .hero__title { font-size: clamp(2.7rem, 7vw, 5rem); font-weight: 800; letter-spacing: -.02em; }
 .hero__lead { font-size: clamp(1.02rem, 1.4vw, 1.18rem); color: var(--on-purple-muted); max-width: 46ch; margin: 1.4rem 0 2rem; }
-.hero__actions { display: flex; flex-wrap: wrap; gap: .8rem; }
+.hero__actions { display: flex; flex-wrap: wrap; gap: .8rem; margin-top: 2rem; }
 
 /* Next-seminar spotlight */
 .spotlight {
@@ -359,12 +405,14 @@ img { max-width: 100%; display: block; }
 .card__title { font-size: 1.18rem; font-weight: 700; margin-bottom: .55rem; }
 .card__speaker { color: var(--muted); font-size: .92rem; margin-bottom: .7rem; }
 .card__speaker strong { color: var(--text); font-weight: 700; }
+.speaker-link { color: inherit; border-bottom: 1px solid transparent; }
+.speaker-link:hover { color: var(--accent-soft); border-bottom-color: currentColor; }
 .card__abstract { color: var(--muted); font-size: .92rem; margin-bottom: 1.1rem; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
 
 .card__foot { margin-top: auto; display: flex; align-items: center; justify-content: space-between; gap: .5rem; padding-top: 1rem; border-top: 1px solid var(--line); }
 .card__meta-time { font-size: .82rem; color: var(--muted); display: flex; align-items: center; gap: .4rem; }
 .card__meta-time svg { width: 14px; height: 14px; }
-.card__more { font-family: var(--font-display); font-weight: 700; font-size: .82rem; color: var(--brand-text); display: inline-flex; gap: .35rem; transition: gap .2s; }
+.card__more { padding: 0; background: none; border: 0; cursor: pointer; font-family: var(--font-display); font-weight: 700; font-size: .82rem; color: var(--brand-text); display: inline-flex; align-items: center; gap: .35rem; transition: gap .2s; }
 .card:hover .card__more { gap: .55rem; }
 
 /* ------------------------------------------------------------------ */

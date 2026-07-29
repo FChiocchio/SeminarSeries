@@ -71,6 +71,12 @@
 
   const metaPill = (icon, text) => `<span class="meta">${icon}${escapeHtml(text)}</span>`;
 
+  function speakerNameHtml(speaker) {
+    const name = `<strong>${escapeHtml(speaker.name)}</strong>`;
+    if (!speaker.website) return name;
+    return `<a class="speaker-link" href="${escapeHtml(speaker.website)}" target="_blank" rel="noopener">${name}</a>`;
+  }
+
   /* --------------------------- partition ---------------------------- */
   const today = startOfToday();
   data.sort((a, b) => parseDate(a.date) - parseDate(b.date));
@@ -91,7 +97,7 @@
       <div class="spotlight__top">
         <div style="width:64px;height:64px;border-radius:14px;overflow:hidden;flex:none">${portraitHtml(s.speaker)}</div>
         <div>
-          <div class="spotlight__speaker"><strong>${escapeHtml(s.speaker.name)}</strong><br>${escapeHtml(s.speaker.affiliation)}</div>
+          <div class="spotlight__speaker">${speakerNameHtml(s.speaker)}<br>${escapeHtml(s.speaker.affiliation)}</div>
         </div>
       </div>
       <h3 class="spotlight__title">${escapeHtml(s.title)}</h3>
@@ -102,7 +108,7 @@
       </div>
       <div class="spotlight__actions">
         <button class="btn btn--primary btn--sm" data-open="${s.id}">View details ${ICON.arrow}</button>
-        <button class="btn btn--ghost btn--sm" data-ics="${s.id}">Add to calendar</button>
+        <button class="btn btn--ghost btn--sm" data-calendar="${s.id}" aria-haspopup="menu" aria-expanded="false">Add to calendar</button>
       </div>`;
 
   }
@@ -118,12 +124,12 @@
         <div class="card__body">
           <h3 class="card__title">${escapeHtml(s.title)}</h3>
           <div class="card__speaker">
-            <strong>${escapeHtml(s.speaker.name)}</strong> · ${escapeHtml(s.speaker.affiliation)}
+            ${speakerNameHtml(s.speaker)} · ${escapeHtml(s.speaker.affiliation)}
           </div>
           <p class="card__abstract">${escapeHtml(s.abstract)}</p>
           <div class="card__foot">
             <span class="card__meta-time">${ICON.clock} ${escapeHtml(s.time)}</span>
-            <span class="card__more">Details ${ICON.arrow}</span>
+            <button type="button" class="card__more" data-open="${s.id}">Details ${ICON.arrow}</button>
           </div>
         </div>
       </article>`;
@@ -197,7 +203,7 @@
     if (links.paper)     linkBtns.push(`<a class="btn btn--ghost btn--sm" href="${escapeHtml(links.paper)}" target="_blank" rel="noopener">Paper</a>`);
     if (links.slides)    linkBtns.push(`<a class="btn btn--ghost btn--sm" href="${escapeHtml(links.slides)}" target="_blank" rel="noopener">Slides</a>`);
     if (links.recording) linkBtns.push(`<a class="btn btn--ghost btn--sm" href="${escapeHtml(links.recording)}" target="_blank" rel="noopener">Recording</a>`);
-    if (parseDate(s.date) >= today) linkBtns.push(`<button class="btn btn--ghost btn--sm" data-ics="${s.id}">Add to calendar</button>`);
+    if (parseDate(s.date) >= today) linkBtns.push(`<button class="btn btn--ghost btn--sm" data-calendar="${s.id}" aria-haspopup="menu" aria-expanded="false">Add to calendar</button>`);
 
     modalBody.innerHTML = `
       <div class="modal__hero">${portraitHtml(s.speaker)}</div>
@@ -230,41 +236,177 @@
   }
 
   /* ----------------------- calendar (.ics) -------------------------- */
+  const CALENDAR_TIMEZONE = "Europe/Paris";
+
   function pad(n) { return String(n).padStart(2, "0"); }
-  function icsStamp(d) {
-    return d.getFullYear() + pad(d.getMonth() + 1) + pad(d.getDate()) + "T" + pad(d.getHours()) + pad(d.getMinutes()) + "00";
+
+  function seminarTimes(s) {
+    const [year, month, day] = s.date.split("-").map(Number);
+    const matches = s.time.match(/(\d{1,2}):(\d{2})/g) || [];
+    const [startHour, startMinute] = (matches[0] || "11:30").split(":").map(Number);
+    const startWall = new Date(Date.UTC(year, month - 1, day, startHour, startMinute));
+    const endWall = new Date(startWall);
+
+    if (matches[1]) {
+      const [endHour, endMinute] = matches[1].split(":").map(Number);
+      endWall.setUTCHours(endHour, endMinute, 0, 0);
+      if (endWall <= startWall) endWall.setUTCDate(endWall.getUTCDate() + 1);
+    } else {
+      endWall.setUTCMinutes(endWall.getUTCMinutes() + 60);
+    }
+
+    return { startWall, endWall };
   }
+
+  function wallStamp(d) {
+    return d.getUTCFullYear() + pad(d.getUTCMonth() + 1) + pad(d.getUTCDate()) +
+      "T" + pad(d.getUTCHours()) + pad(d.getUTCMinutes()) + "00";
+  }
+
+  function parisLocalToUtc(wall) {
+    const formatter = new Intl.DateTimeFormat("en-CA", {
+      timeZone: CALENDAR_TIMEZONE,
+      year: "numeric", month: "2-digit", day: "2-digit",
+      hour: "2-digit", minute: "2-digit", second: "2-digit",
+      hourCycle: "h23"
+    });
+    const parts = Object.fromEntries(
+      formatter.formatToParts(wall).filter((p) => p.type !== "literal").map((p) => [p.type, Number(p.value)])
+    );
+    const representedAsUtc = Date.UTC(parts.year, parts.month - 1, parts.day, parts.hour, parts.minute, parts.second);
+    const offset = representedAsUtc - wall.getTime();
+    return new Date(wall.getTime() - offset);
+  }
+
+  function utcStamp(d) {
+    return d.toISOString().replace(/[-:]/g, '').replace(/\.\d{3}Z$/, 'Z');
+  }
+
+  function escapeCalendarText(value) {
+    return String(value).replace(/\\/g, '\\\\').replace(/\r?\n/g, '\\n').replace(/([,;])/g, '\\$1');
+  }
+
+  function calendarUrls(s) {
+    const { startWall, endWall } = seminarTimes(s);
+    const startUtc = parisLocalToUtc(startWall);
+    const endUtc = parisLocalToUtc(endWall);
+    const summary = `ESCP Economics Seminar — ${s.speaker.name}`;
+    const details = `${s.title}\n\n${s.abstract}`;
+    const location = `${s.campus} · ${s.location}`;
+
+    const googleParams = new URLSearchParams({
+      action: 'TEMPLATE',
+      text: summary,
+      dates: `${wallStamp(startWall)}/${wallStamp(endWall)}`,
+      ctz: CALENDAR_TIMEZONE,
+      details,
+      location
+    });
+    const outlookParams = new URLSearchParams({
+      subject: summary,
+      startdt: startUtc.toISOString(),
+      enddt: endUtc.toISOString(),
+      body: details,
+      location
+    });
+
+    return {
+      google: `https://calendar.google.com/calendar/render?${googleParams}`,
+      outlook: `https://outlook.office.com/calendar/0/deeplink/compose?${outlookParams}`
+    };
+  }
+
   function downloadICS(id) {
     const s = data.find((x) => x.id === id);
     if (!s) return;
-    const start = parseDate(s.date);
-    const m = s.time.match(/(\d{1,2}):(\d{2})/g) || [];
-    const [sh, sm] = (m[0] || "16:00").split(":").map(Number);
-    start.setHours(sh, sm, 0, 0);
-    const end = new Date(start);
-    if (m[1]) { const [eh, em] = m[1].split(":").map(Number); end.setHours(eh, em, 0, 0); }
-    else { end.setMinutes(end.getMinutes() + 60); }
-
+    const { startWall, endWall } = seminarTimes(s);
+    const summary = `ESCP Economics Seminar — ${s.speaker.name}`;
+    const description = `${s.title}\n\n${s.abstract}`;
+    const location = `${s.campus} · ${s.location}`;
     const ics = [
-      "BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//ESCP Economics Seminar Series//EN",
-      "BEGIN:VEVENT",
-      "UID:" + s.id + "@escp-econ-seminars",
-      "DTSTART:" + icsStamp(start),
-      "DTEND:" + icsStamp(end),
-      "SUMMARY:" + ("Econ Seminar — " + s.speaker.name + " (" + s.speaker.affiliation + ")").replace(/,/g, "\\,"),
-      "DESCRIPTION:" + (s.title + " — " + s.abstract).replace(/[,;]/g, "\\$&").replace(/\n/g, "\\n"),
-      "LOCATION:" + s.location.replace(/,/g, "\\,"),
-      "END:VEVENT", "END:VCALENDAR"
-    ].join("\r\n");
+      'BEGIN:VCALENDAR',
+      'VERSION:2.0',
+      'CALSCALE:GREGORIAN',
+      'METHOD:PUBLISH',
+      'PRODID:-//ESCP Economics Seminar Series//EN',
+      'X-WR-TIMEZONE:Europe/Paris',
+      'BEGIN:VTIMEZONE',
+      'TZID:Europe/Paris',
+      'X-LIC-LOCATION:Europe/Paris',
+      'BEGIN:DAYLIGHT',
+      'TZOFFSETFROM:+0100',
+      'TZOFFSETTO:+0200',
+      'TZNAME:CEST',
+      'DTSTART:19700329T020000',
+      'RRULE:FREQ=YEARLY;BYMONTH=3;BYDAY=-1SU',
+      'END:DAYLIGHT',
+      'BEGIN:STANDARD',
+      'TZOFFSETFROM:+0200',
+      'TZOFFSETTO:+0100',
+      'TZNAME:CET',
+      'DTSTART:19701025T030000',
+      'RRULE:FREQ=YEARLY;BYMONTH=10;BYDAY=-1SU',
+      'END:STANDARD',
+      'END:VTIMEZONE',
+      'BEGIN:VEVENT',
+      `UID:${s.id}@escp-econ-seminars`,
+      `DTSTAMP:${utcStamp(new Date())}`,
+      `DTSTART;TZID=${CALENDAR_TIMEZONE}:${wallStamp(startWall)}`,
+      `DTEND;TZID=${CALENDAR_TIMEZONE}:${wallStamp(endWall)}`,
+      `SUMMARY:${escapeCalendarText(summary)}`,
+      `DESCRIPTION:${escapeCalendarText(description)}`,
+      `LOCATION:${escapeCalendarText(location)}`,
+      'END:VEVENT',
+      'END:VCALENDAR'
+    ].join('\r\n');
 
-    const blob = new Blob([ics], { type: "text/calendar" });
-    const a = document.createElement("a");
+    const blob = new Blob([ics], { type: 'text/calendar;charset=utf-8' });
+    const a = document.createElement('a');
     a.href = URL.createObjectURL(blob);
-    a.download = s.id + ".ics";
+    a.download = s.id + '.ics';
     document.body.appendChild(a);
     a.click();
     a.remove();
     URL.revokeObjectURL(a.href);
+  }
+
+  const calendarMenu = $('#calendarMenu');
+  let calendarMenuTrigger = null;
+
+  function closeCalendarMenu(returnFocus = false) {
+    if (!calendarMenu || calendarMenu.hidden) return;
+    calendarMenu.hidden = true;
+    calendarMenu.innerHTML = '';
+    $$('[data-calendar][aria-expanded=true]').forEach((button) => button.setAttribute('aria-expanded', 'false'));
+    if (returnFocus && calendarMenuTrigger) calendarMenuTrigger.focus();
+    calendarMenuTrigger = null;
+  }
+
+  function openCalendarMenu(trigger, id) {
+    const s = data.find((item) => item.id === id);
+    if (!s || !calendarMenu) return;
+    const urls = calendarUrls(s);
+    closeCalendarMenu();
+    calendarMenuTrigger = trigger;
+    trigger.setAttribute('aria-expanded', 'true');
+    calendarMenu.innerHTML = `
+      <div class='calendar-menu__title'>Add ${escapeHtml(s.speaker.name)} to calendar</div>
+      <a class='calendar-menu__item' role='menuitem' href='${escapeHtml(urls.google)}' target='_blank' rel='noopener'>Google Calendar</a>
+      <a class='calendar-menu__item' role='menuitem' href='${escapeHtml(urls.outlook)}' target='_blank' rel='noopener'>Outlook Calendar</a>
+      <button class='calendar-menu__item' role='menuitem' type='button' data-ics='${escapeHtml(s.id)}'>Apple Calendar / download .ics</button>
+      <p class='calendar-menu__note'>Times are set in Europe/Paris. Added events do not update automatically.</p>`;
+    calendarMenu.hidden = false;
+
+    const triggerRect = trigger.getBoundingClientRect();
+    const menuRect = calendarMenu.getBoundingClientRect();
+    const margin = 12;
+    let top = triggerRect.bottom + 8;
+    if (top + menuRect.height > window.innerHeight - margin) top = triggerRect.top - menuRect.height - 8;
+    const left = Math.min(Math.max(margin, triggerRect.left), window.innerWidth - menuRect.width - margin);
+    calendarMenu.style.top = Math.max(margin, top) + 'px';
+    calendarMenu.style.left = left + 'px';
+    const firstItem = calendarMenu.querySelector('.calendar-menu__item');
+    if (firstItem) firstItem.focus();
   }
 
   /* --------------------- global click handling ---------------------- */
@@ -272,12 +414,29 @@
     const opener = e.target.closest("[data-open]");
     if (opener && !e.target.closest("a")) { openModal(opener.dataset.open); return; }
 
+    const calendarButton = e.target.closest('[data-calendar]');
+    if (calendarButton) {
+      e.stopPropagation();
+      if (calendarButton.getAttribute('aria-expanded') === 'true') closeCalendarMenu(true);
+      else openCalendarMenu(calendarButton, calendarButton.dataset.calendar);
+      return;
+    }
+
     const ics = e.target.closest("[data-ics]");
-    if (ics) { e.stopPropagation(); downloadICS(ics.dataset.ics); return; }
+    if (ics) { e.stopPropagation(); downloadICS(ics.dataset.ics); closeCalendarMenu(); return; }
+
+    if (e.target.closest('#calendarMenu a')) { closeCalendarMenu(); return; }
+    if (calendarMenu && !calendarMenu.hidden && !e.target.closest('#calendarMenu')) closeCalendarMenu();
 
     if (e.target.closest("[data-close]")) { closeModal(); }
   });
-  document.addEventListener("keydown", (e) => { if (e.key === "Escape" && !modal.hidden) closeModal(); });
+  document.addEventListener("keydown", (e) => {
+    if (e.key !== "Escape") return;
+    if (calendarMenu && !calendarMenu.hidden) closeCalendarMenu(true);
+    else if (!modal.hidden) closeModal();
+  });
+  window.addEventListener('resize', () => closeCalendarMenu());
+  window.addEventListener('scroll', () => closeCalendarMenu(), true);
 
   /* --------------------------- reveals ------------------------------ */
   let revealObserver;
@@ -337,6 +496,7 @@
     let down = false, startX = 0, startLeft = 0, moved = false;
     track.addEventListener("pointerdown", (e) => {
       if (e.pointerType !== "mouse" || e.button !== 0) return;
+      if (e.target.closest('button, a')) return;
       down = true; moved = false; startX = e.clientX; startLeft = track.scrollLeft;
       track.classList.add("is-dragging");
       track.setPointerCapture(e.pointerId);
