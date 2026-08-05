@@ -7,9 +7,9 @@
 
 const SEMINARS = [
   {
-    id: '2026-09-24-gonzalez',
-    date: '2026-09-24',
-    time: '11:30 (Paris time)',
+    id: '2026-09-23-gonzalez',
+    date: '2026-09-23',
+    time: '12:15–13:15 (Paris time)',
     campus: 'Turin',
     location: 'TBC',
     title: 'TBC',
@@ -24,26 +24,26 @@ const SEMINARS = [
     links: {}
   },
   {
-    id: '2026-10-15-suteau',
-    date: '2026-10-15',
-    time: '11:30 (Paris time)',
-    campus: 'Berlin',
+    id: '2026-10-14-della-giusta',
+    date: '2026-10-14',
+    time: '12:15–13:15 (Paris time)',
+    campus: 'Turin',
     location: 'TBC',
     title: 'TBC',
     abstract: 'TBC',
     speaker: {
-      name: 'Margaux Suteau',
-      affiliation: 'ESCP Business School',
-      website: 'https://sites.google.com/view/margauxsuteau',
-      photo: 'assets/img/speakers/margaux-suteau.jpg',
-      photoPosition: 'center 28%'
+      name: 'Marina Della Giusta',
+      affiliation: 'University of Turin',
+      website: 'https://www.giurisprudenza.unito.it/persone/marina.dellagiusta',
+      photo: 'assets/img/speakers/marina-della-giusta.jpg',
+      photoPosition: 'center 30%'
     },
     links: {}
   },
   {
-    id: '2026-11-12-fernandez-de-cordoba',
-    date: '2026-11-12',
-    time: '11:30 (Paris time)',
+    id: '2026-11-11-fernandez-de-cordoba',
+    date: '2026-11-11',
+    time: '12:15–13:15 (Paris time)',
     campus: 'Madrid',
     location: 'TBC',
     title: 'TBC',
@@ -58,26 +58,26 @@ const SEMINARS = [
     links: {}
   },
   {
-    id: '2026-11-26-chiocchio',
-    date: '2026-11-26',
-    time: '11:30 (Paris time)',
-    campus: 'Madrid',
+    id: '2026-11-25-suteau',
+    date: '2026-11-25',
+    time: '12:15–13:15 (Paris time)',
+    campus: 'Berlin',
     location: 'TBC',
     title: 'TBC',
     abstract: 'TBC',
     speaker: {
-      name: 'Francesco Chiocchio',
+      name: 'Margaux Suteau',
       affiliation: 'ESCP Business School',
-      website: 'https://fchiocchio.github.io/',
-      photo: 'assets/img/speakers/francesco-chiocchio.jpg',
-      photoPosition: 'center 30%'
+      website: 'https://sites.google.com/view/margauxsuteau',
+      photo: 'assets/img/speakers/margaux-suteau.jpg',
+      photoPosition: 'center 28%'
     },
     links: {}
   },
   {
     id: '2026-12-17-hubert',
     date: '2026-12-17',
-    time: '11:30 (Paris time)',
+    time: '12:15–13:15 (Paris time)',
     campus: 'Paris',
     location: 'TBC',
     title: 'TBC',

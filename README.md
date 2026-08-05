@@ -33,7 +33,7 @@ Minimal example:
 {
   id: "2026-11-04-speaker",        // any unique string
   date: "2026-11-04",              // YYYY-MM-DD
-  time: "11:30 (Paris time)",
+  time: "12:15–13:15 (Paris time)",
   campus: "Paris",                 // Paris | Madrid | Berlin | London | Turin
   location: "TBC",
   title: "TBC",
@@ -83,6 +83,7 @@ theme is included and toggled with the ◐ button in the header.
 - Speaker cards → click for a **detail modal** (full abstract + links)
 - **Filter** past seminars by year
 - **Add to calendar** — Google, Outlook, or Apple/`.ics`, using Europe/Paris time
+- **Subscribe to calendar** — follow the public Google Calendar and receive schedule updates
 - Light / dark theme, mobile menu, scroll-reveal animations
 - Works offline; no frameworks
 

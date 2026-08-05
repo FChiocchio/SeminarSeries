@@ -238,6 +238,11 @@
 
   /* ----------------------- calendar (.ics) -------------------------- */
   const CALENDAR_TIMEZONE = "Europe/Paris";
+  const PUBLIC_CALENDAR_ID = "c_a7e19ae84153d36b02b684e394e322a5c0595ebd5d13ccb945fec37bb56421e2@group.calendar.google.com";
+  const PUBLIC_CALENDAR_EMBED_URL = `https://calendar.google.com/calendar/embed?src=${encodeURIComponent(PUBLIC_CALENDAR_ID)}&ctz=${encodeURIComponent(CALENDAR_TIMEZONE)}`;
+  const PUBLIC_CALENDAR_ICAL_URL = `https://calendar.google.com/calendar/ical/${encodeURIComponent(PUBLIC_CALENDAR_ID)}/public/basic.ics`;
+  const PUBLIC_CALENDAR_GOOGLE_URL = `https://calendar.google.com/calendar/u/0/r?cid=${encodeURIComponent(PUBLIC_CALENDAR_ID)}`;
+  const PUBLIC_CALENDAR_WEBCAL_URL = PUBLIC_CALENDAR_ICAL_URL.replace(/^https:/, "webcal:");
 
   function pad(n) { return String(n).padStart(2, "0"); }
 
@@ -378,9 +383,37 @@
     if (!calendarMenu || calendarMenu.hidden) return;
     calendarMenu.hidden = true;
     calendarMenu.innerHTML = '';
-    $$('[data-calendar][aria-expanded=true]').forEach((button) => button.setAttribute('aria-expanded', 'false'));
+    $$('[data-calendar][aria-expanded=true], [data-subscribe-calendar][aria-expanded=true]').forEach((button) => button.setAttribute('aria-expanded', 'false'));
     if (returnFocus && calendarMenuTrigger) calendarMenuTrigger.focus();
     calendarMenuTrigger = null;
+  }
+
+  function positionCalendarMenu(trigger) {
+    const triggerRect = trigger.getBoundingClientRect();
+    const menuRect = calendarMenu.getBoundingClientRect();
+    const margin = 12;
+    let top = triggerRect.bottom + 8;
+    if (top + menuRect.height > window.innerHeight - margin) top = triggerRect.top - menuRect.height - 8;
+    const left = Math.min(Math.max(margin, triggerRect.left), window.innerWidth - menuRect.width - margin);
+    calendarMenu.style.top = Math.max(margin, top) + 'px';
+    calendarMenu.style.left = left + 'px';
+    const firstItem = calendarMenu.querySelector('.calendar-menu__item');
+    if (firstItem) firstItem.focus();
+  }
+
+  function openSubscriptionMenu(trigger) {
+    if (!calendarMenu) return;
+    closeCalendarMenu();
+    calendarMenuTrigger = trigger;
+    trigger.setAttribute('aria-expanded', 'true');
+    calendarMenu.innerHTML = `
+      <div class='calendar-menu__title'>Subscribe to the seminar calendar</div>
+      <a class='calendar-menu__item' role='menuitem' href='${escapeHtml(PUBLIC_CALENDAR_GOOGLE_URL)}' target='_blank' rel='noopener'>Google Calendar</a>
+      <a class='calendar-menu__item' role='menuitem' href='${escapeHtml(PUBLIC_CALENDAR_WEBCAL_URL)}'>Apple, Outlook, or another calendar app</a>
+      <a class='calendar-menu__item' role='menuitem' href='${escapeHtml(PUBLIC_CALENDAR_EMBED_URL)}' target='_blank' rel='noopener'>View the public calendar</a>
+      <p class='calendar-menu__note'>Subscribed calendars update automatically when seminar details change.</p>`;
+    calendarMenu.hidden = false;
+    positionCalendarMenu(trigger);
   }
 
   function openCalendarMenu(trigger, id) {
@@ -398,16 +431,7 @@
       <p class='calendar-menu__note'>Times are set in Europe/Paris. Added events do not update automatically.</p>`;
     calendarMenu.hidden = false;
 
-    const triggerRect = trigger.getBoundingClientRect();
-    const menuRect = calendarMenu.getBoundingClientRect();
-    const margin = 12;
-    let top = triggerRect.bottom + 8;
-    if (top + menuRect.height > window.innerHeight - margin) top = triggerRect.top - menuRect.height - 8;
-    const left = Math.min(Math.max(margin, triggerRect.left), window.innerWidth - menuRect.width - margin);
-    calendarMenu.style.top = Math.max(margin, top) + 'px';
-    calendarMenu.style.left = left + 'px';
-    const firstItem = calendarMenu.querySelector('.calendar-menu__item');
-    if (firstItem) firstItem.focus();
+    positionCalendarMenu(trigger);
   }
 
   /* --------------------- global click handling ---------------------- */
@@ -420,6 +444,14 @@
       e.stopPropagation();
       if (calendarButton.getAttribute('aria-expanded') === 'true') closeCalendarMenu(true);
       else openCalendarMenu(calendarButton, calendarButton.dataset.calendar);
+      return;
+    }
+
+    const subscribeButton = e.target.closest('[data-subscribe-calendar]');
+    if (subscribeButton) {
+      e.stopPropagation();
+      if (subscribeButton.getAttribute('aria-expanded') === 'true') closeCalendarMenu(true);
+      else openSubscriptionMenu(subscribeButton);
       return;
     }
 
