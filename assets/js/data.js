@@ -11,9 +11,10 @@ const SEMINARS = [
     date: '2026-09-23',
     time: '12:15–13:15 (Paris time)',
     campus: 'Turin',
-    location: 'TBC',
-    title: 'TBC',
-    abstract: 'TBC',
+    location: 'Room 201',
+    title: 'Changing Gender Norms across Generations: Evidence from a Paternity Leave Reform',
+    jointWith: 'Lídia Farré, Christina Felfe, and Patrick Schneider',
+    abstract: 'Social norms are an important barrier to gender convergence in economic outcomes. We study whether a public policy designed to promote gender equality at home can pave the way towards gender convergence by shaping gender norms in the next generation. We exploit the introduction of paid paternity leave in Spain in 2007, which granted fathers 13 days of non-transferable paid leave after childbirth. Eligibility depended sharply on the child\'s date of birth. We combine this policy variation with original survey data collected from adolescents and implement a within-school difference-in-differences design comparing children born just before and after the reform cutoff within the same school cohort, using adjacent cohorts as controls. Children exposed to paternity leave eligibility display more egalitarian gender attitudes and beliefs in early adolescence. They are also more likely to engage in counter-stereotypical household chores, and hold less gender-stereotypical expectations regarding future work and family roles. The effects largely disappear in late adolescence.',
     speaker: {
       name: 'Libertad González',
       affiliation: 'Universitat Pompeu Fabra',

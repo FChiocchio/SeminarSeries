@@ -311,6 +311,8 @@ img { max-width: 100%; display: block; }
 .spotlight__tag .live { width: 8px; height: 8px; border-radius: 50%; background: var(--accent-soft); animation: pulse 2s infinite; }
 .spotlight__top { display: flex; gap: 1rem; align-items: center; }
 .spotlight__title { font-size: 1.32rem; margin: .2rem 0 .35rem; }
+.paper-coauthors { color: var(--muted); font-size: .84rem; font-style: italic; margin: 0 0 .65rem; }
+.spotlight .paper-coauthors { color: var(--on-purple-muted); }
 .spotlight__speaker { color: var(--on-purple-muted); font-size: .95rem; }
 .spotlight__speaker strong { color: #fff; font-weight: 700; }
 .spotlight__meta { display: flex; flex-wrap: wrap; gap: .5rem; margin: 1.1rem 0; }
@@ -487,6 +489,7 @@ img { max-width: 100%; display: block; }
 
 .modal__content { padding: 0 clamp(1.4rem, 4vw, 2.2rem) clamp(1.6rem, 4vw, 2.2rem); margin-top: -2.5rem; position: relative; z-index: 2; }
 .modal__content h2 { font-size: clamp(1.4rem, 3vw, 2rem); margin-bottom: 1rem; }
+.modal__content h2 + .paper-coauthors { margin-top: -.55rem; margin-bottom: 1rem; }
 .modal__speaker { display: flex; align-items: center; gap: .8rem; margin-bottom: 1.3rem; }
 .modal__speaker > div:first-child { width: 52px; height: 52px; border-radius: 50%; overflow: hidden; flex: none; }
 .modal__speaker img,

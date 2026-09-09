@@ -78,6 +78,9 @@
     return `<a class="speaker-link" href="${escapeHtml(speaker.website)}" target="_blank" rel="noopener">${name}</a>`;
   }
 
+  const jointWorkHtml = (s) =>
+    s.jointWith ? `<p class="paper-coauthors">Joint with ${escapeHtml(s.jointWith)}</p>` : "";
+
   /* --------------------------- partition ---------------------------- */
   const today = startOfToday();
   data.sort((a, b) => parseDate(a.date) - parseDate(b.date));
@@ -102,6 +105,7 @@
         </div>
       </div>
       <h3 class="spotlight__title">${escapeHtml(s.title)}</h3>
+      ${jointWorkHtml(s)}
       <div class="spotlight__meta">
         ${metaPill(ICON.cal, parseDate(s.date).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" }))}
         ${metaPill(ICON.clock, s.time)}
@@ -124,6 +128,7 @@
         <div class="card__media">${portraitHtml(s.speaker)}</div>
         <div class="card__body">
           <h3 class="card__title">${escapeHtml(s.title)}</h3>
+          ${jointWorkHtml(s)}
           <div class="card__speaker">
             ${speakerNameHtml(s.speaker)} · ${escapeHtml(s.speaker.affiliation)}
           </div>
@@ -159,6 +164,7 @@
         <div class="past-item__date"><div class="pd-day">${dt.getDate()} ${MONTHS[dt.getMonth()]}</div><div class="pd-yr">${dt.getFullYear()}</div></div>
         <div class="past-item__main">
           <div class="past-item__title">${escapeHtml(s.title)}</div>
+          ${jointWorkHtml(s)}
           <div class="past-item__speaker"><strong>${escapeHtml(s.speaker.name)}</strong> · ${escapeHtml(s.speaker.affiliation)}</div>
         </div>
         <div class="past-item__links">${pills.join("")}</div>
@@ -210,6 +216,7 @@
       <div class="modal__hero">${portraitHtml(s.speaker)}</div>
       <div class="modal__content">
         <h2 id="modalTitle">${escapeHtml(s.title)}</h2>
+        ${jointWorkHtml(s)}
         <div class="modal__speaker">
           <div style="width:52px;height:52px;border-radius:50%;overflow:hidden;flex:none">${portraitHtml(s.speaker)}</div>
           <div>
@@ -292,7 +299,7 @@
     const startUtc = parisLocalToUtc(startWall);
     const endUtc = parisLocalToUtc(endWall);
     const summary = `ESCP Economics Seminar — ${s.speaker.name}`;
-    const details = `${s.title}\n\n${s.abstract}`;
+    const details = `${s.title}${s.jointWith ? `\nJoint with ${s.jointWith}` : ""}\n\n${s.abstract}`;
     const location = `${s.campus} · ${s.location}`;
 
     const googleParams = new URLSearchParams({
@@ -322,7 +329,7 @@
     if (!s) return;
     const { startWall, endWall } = seminarTimes(s);
     const summary = `ESCP Economics Seminar — ${s.speaker.name}`;
-    const description = `${s.title}\n\n${s.abstract}`;
+    const description = `${s.title}${s.jointWith ? `\nJoint with ${s.jointWith}` : ""}\n\n${s.abstract}`;
     const location = `${s.campus} · ${s.location}`;
     const ics = [
       'BEGIN:VCALENDAR',
