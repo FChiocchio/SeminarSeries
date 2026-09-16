@@ -466,6 +466,7 @@ img { max-width: 100%; display: block; }
 .footer__col a:hover { color: var(--gold); border-color: var(--gold); }
 .footer__subscribe .btn { color: var(--accent-ink); border-bottom: 0; }
 .footer__subscribe .btn:hover { color: var(--accent-ink); border-color: transparent; }
+.footer__subscribe .footer__fallback { margin-top: .8rem; font-size: .8rem; }
 
 .footer__bar { display: flex; justify-content: space-between; align-items: center; gap: 1rem; flex-wrap: wrap; padding: 1.4rem 0; border-top: 1px solid var(--p-line); color: var(--on-purple-muted); font-size: .85rem; }
 .footer__links a:hover { color: var(--gold); }
